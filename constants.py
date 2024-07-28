@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
-ckpt_path = Path(os.getenv("CKPT_PATH", "./data"))
+ckpt_path = Path(os.getenv("CKPT_PATH", "../data"))
 
 MODEL_7B_PATH = ckpt_path / "models" / "7b"
 

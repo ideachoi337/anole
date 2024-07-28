@@ -12,11 +12,59 @@ import torch
 
 from chameleon.inference.transformer import ModelArgs, Transformer
 
+from accelerate import init_empty_weights, load_checkpoint_and_dispatch
+
 
 def _convert(model_args: ModelArgs, consolidated_path: Path) -> Transformer:
     old_default_dtype = torch.get_default_dtype()
     torch.set_default_dtype(torch.bfloat16)
 
+    #with init_empty_weights():
+    model = Transformer(model_args)
+
+    device_map = {
+        'tok_embeddings': 0, 
+        'layers.0': 0, 
+        'layers.1': 0, 
+        'layers.2': 0, 
+        'layers.3': 0, 
+        'layers.4': 0, 
+        'layers.5': 0, 
+        'layers.6': 0, 
+        'layers.7': 0, 
+        'layers.8': 0, 
+        'layers.9': 1, 
+        'layers.10': 1, 
+        'layers.11': 1, 
+        'layers.12': 1, 
+        'layers.13': 1, 
+        'layers.14': 1, 
+        'layers.15': 1, 
+        'layers.16': 1, 
+        'layers.17': 1, 
+        'layers.18': 2, 
+        'layers.19': 2, 
+        'layers.20': 2, 
+        'layers.21': 2, 
+        'layers.22': 2, 
+        'layers.23': 2, 
+        'layers.24': 2, 
+        'layers.25': 3, 
+        'layers.26': 3, 
+        'layers.27': 3, 
+        'layers.28': 3, 
+        'layers.29': 3, 
+        'layers.30': 3, 
+        'layers.31': 3, 
+        'norm': 3, 
+        'output': 3, 
+    }
+    model = load_checkpoint_and_dispatch(
+        model,
+        checkpoint=str(consolidated_path),
+        device_map=device_map
+    )
+    """
     model = Transformer(model_args)
 
     transfer_results = model.load_state_dict(
@@ -27,6 +75,7 @@ def _convert(model_args: ModelArgs, consolidated_path: Path) -> Transformer:
     # TODO: More generally, assert missing or unexpected keys are buffers.
     assert transfer_results.missing_keys == []
     assert transfer_results.unexpected_keys == ["rope.freqs"]
+    """
 
     model.eval()
 
