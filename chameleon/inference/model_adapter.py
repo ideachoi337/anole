@@ -73,7 +73,6 @@ class ChameleonModelAdapter(ModelAdapter):
         # inputs.shape=[batch, seq-len]
         batch_size, seq_len = inputs.shape
 
-        flat_outputs.to(input.device)
 
         if self._first_pass:
             attn_seqlen = [min(pl, seq_len) for pl in self._prompt_lengths]
@@ -96,10 +95,6 @@ class ChameleonModelAdapter(ModelAdapter):
                 (inputs.shape[0], inputs.shape[1], flat_outputs.shape[-1]),
                 -math.inf,
             )
-            print('1', mask.device)
-            print('2', flat_outputs.device)
-            print('3', self._local_outputs.device)
-            print('4', inputs.device)
             self._local_outputs[mask] = flat_outputs
 
             self._vocab_size = self._local_outputs.shape[-1]

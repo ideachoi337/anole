@@ -67,5 +67,6 @@ def parse_arguments() -> argparse.Namespace:
     return args
 
 if __name__ == "__main__":
+    os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
     args: argparse.Namespace = parse_arguments()
     main(args)

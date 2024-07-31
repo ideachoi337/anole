@@ -24,31 +24,31 @@ def _convert(model_args: ModelArgs, consolidated_path: Path) -> Transformer:
 
     device_map = {
         'tok_embeddings': 0, 
-        'layers.0': 0, 
-        'layers.1': 0, 
-        'layers.2': 0, 
-        'layers.3': 0, 
-        'layers.4': 0, 
-        'layers.5': 0, 
-        'layers.6': 0, 
-        'layers.7': 0, 
-        'layers.8': 0, 
+        'layers.0': 1, 
+        'layers.1': 1, 
+        'layers.2': 1, 
+        'layers.3': 1, 
+        'layers.4': 1, 
+        'layers.5': 1, 
+        'layers.6': 1, 
+        'layers.7': 1, 
+        'layers.8': 1, 
         'layers.9': 1, 
         'layers.10': 1, 
-        'layers.11': 1, 
-        'layers.12': 1, 
-        'layers.13': 1, 
-        'layers.14': 1, 
-        'layers.15': 1, 
-        'layers.16': 1, 
-        'layers.17': 1, 
+        'layers.11': 2, 
+        'layers.12': 2, 
+        'layers.13': 2, 
+        'layers.14': 2, 
+        'layers.15': 2, 
+        'layers.16': 2, 
+        'layers.17': 2, 
         'layers.18': 2, 
         'layers.19': 2, 
         'layers.20': 2, 
         'layers.21': 2, 
-        'layers.22': 2, 
-        'layers.23': 2, 
-        'layers.24': 2, 
+        'layers.22': 3, 
+        'layers.23': 3, 
+        'layers.24': 3, 
         'layers.25': 3, 
         'layers.26': 3, 
         'layers.27': 3, 
@@ -57,7 +57,7 @@ def _convert(model_args: ModelArgs, consolidated_path: Path) -> Transformer:
         'layers.30': 3, 
         'layers.31': 3, 
         'norm': 3, 
-        'output': 3, 
+        'output': 0, 
     }
     model = load_checkpoint_and_dispatch(
         model,
@@ -66,6 +66,7 @@ def _convert(model_args: ModelArgs, consolidated_path: Path) -> Transformer:
     )
     """
     model = Transformer(model_args)
+    """
 
     transfer_results = model.load_state_dict(
         torch.load(str(consolidated_path), map_location='cuda'),
@@ -75,7 +76,6 @@ def _convert(model_args: ModelArgs, consolidated_path: Path) -> Transformer:
     # TODO: More generally, assert missing or unexpected keys are buffers.
     assert transfer_results.missing_keys == []
     assert transfer_results.unexpected_keys == ["rope.freqs"]
-    """
 
     model.eval()
 

@@ -497,6 +497,7 @@ def _worker_impl(
 
     is_coord = rank == 0
 
+    idx = 0
     while True:
         req = [Options(), [], 0, False]
         if is_coord:
@@ -513,6 +514,8 @@ def _worker_impl(
             options=options,
             input_ids=input_ids,
         ):
+            print('test', idx)
+            idx += 1
             if is_coord:
                 dctx.res_q.put((key, token))
 
